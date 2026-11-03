@@ -17,7 +17,7 @@ from prompts.guard import CATEGORY_DESCRIPTIONS, GUARD_SYSTEM_PROMPT, RISK_FLAG_
 
 CATEGORIES = tuple(CATEGORY_DESCRIPTIONS)
 RISK_FLAGS = tuple(RISK_FLAG_DESCRIPTIONS)
-GUARD_MAX_TOKENS = 400
+GUARD_MAX_TOKENS = 2000
 
 # A deterministic safety net that runs before the model. Matching is
 # case-insensitive and on whole phrases. The list is short on purpose: it

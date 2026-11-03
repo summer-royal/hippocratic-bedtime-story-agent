@@ -44,7 +44,7 @@ def call_model(prompt: str, system: str | None = None, max_tokens: int = 3000) -
 
     Raises:
         RuntimeError: If the key is missing or rejected, the network fails,
-            or the model declines the request.
+            the model declines the request, or the reply was cut off at max_tokens.
     """
     client = get_client()
     try:
@@ -65,5 +65,8 @@ def call_model(prompt: str, system: str | None = None, max_tokens: int = 3000) -
 
     if response.stop_reason == "refusal":
         raise RuntimeError("The model declined this request.")
+    # A cut-off reply is unusable: a story or JSON that stops mid-way must never reach a child.
+    if response.stop_reason == "max_tokens":
+        raise RuntimeError("The model's reply was cut off before it finished. Please try again.")
 
     return "".join(block.text for block in response.content if block.type == "text")

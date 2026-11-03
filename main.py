@@ -1,8 +1,9 @@
 import sys
 
 from guard import Route, check_request
-from llm import call_model
 from messages import DECLINE_MESSAGE, ESCALATION_MESSAGE
+from outline import plan_outline
+from storyteller import write_story
 
 """
 Before submitting the assignment, describe here in a few sentences what you would have built next if you spent 2 more hours on this project:
@@ -22,12 +23,17 @@ def main():
         if result.route is Route.DECLINE:
             print(DECLINE_MESSAGE)
             return
-        # The storyteller arrives in milestone 3. Until then, the raw model answers.
-        response = call_model(user_input)
+        outline = plan_outline(user_input, result)
+        story = write_story(outline, result.category or "calm_and_cozy")
     except RuntimeError as error:
         print(f"Error: {error}")
         sys.exit(1)
-    print(response)
+    except ValueError:
+        print("The story planner gave an unusable answer. Please try again.")
+        sys.exit(1)
+    print(outline.title)
+    print()
+    print(story)
 
 
 if __name__ == "__main__":
