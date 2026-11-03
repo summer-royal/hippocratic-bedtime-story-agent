@@ -19,7 +19,7 @@ Before submitting the assignment, describe here in a few sentences what you woul
 
 If I had two more hours, I would:
 1. Create a held-out evaluation set of ~100 example requests to tune my prompt. 
-2. If I was allowed to consult others to judge the output stories, I would generate 20 stories, have the LLM judge score these stories against the rubric, and then ask my friends and family to score the stories against the same rubric to see how their scores compare to the judge’s scores. If I am not allowed to consult with others, I would consult ChatGPT and Gemini as an external judge to comapre against Claude. 
+2. I would generate 20 stories, have the current LLM judge score these stories against the rubric, and then ask ChatGPT and Gemini to score the stories against the same rubric to see how their scores compare to the current judge’s scores. 
 3. Right now, if a child sends a concerning message that warrants an escalation, resources are provided to the child, including the phone number for emergency services 911; ideally, I would expand this to provide resources based on the child’s country (not specific to the U.S.)
 4. Since a child's prompt could contain sensitive or private informaiton, I would add an option to delete previous chats in case a child does not want to store their chat history.
 """
