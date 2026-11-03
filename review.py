@@ -1,12 +1,14 @@
-"""Review: runs the code gate and the safety reviewer on a finished story.
+"""Review: runs the code gate and the safety reviewer on a finished story and its title.
 
-A story passes only if both pass. The reviewer is strict: any issue it lists
-fails the story, even when it also says the story is safe.
+A story passes only if both checks pass. The title is shown to the child too,
+so it is checked the same way. The reviewer is strict: any issue it lists fails
+the story, and a malformed reply fails it too.
 """
 
+import re
 from dataclasses import dataclass
 
-from gate import gate_problems
+from gate import BANNED_WORDS, gate_problems
 from guard import GuardResult
 from llm import call_model
 from outline import Outline
@@ -25,34 +27,41 @@ class Review:
 
 
 def review_story(story: str, outline: Outline, guard: GuardResult, request: str) -> Review:
-    """Run the code gate and the safety reviewer, then combine their findings.
+    """Run the code gate and the safety reviewer on the story and its title.
 
     Args:
         story: The storyteller's text.
-        outline: The outline the story was written from.
+        outline: The outline the story was written from. Its title is checked too.
         guard: The guard's decision for the request.
         request: The text the parent or child typed.
 
     Returns:
-        A Review. It passes only when there are no problems from either check.
+        A Review. It passes only when there are no problems from any check.
 
     Raises:
         RuntimeError: If the safety reviewer's model call fails (see llm.call_model).
     """
     problems = gate_problems(story, outline.closing_line, guard.risk_flags, request)
-    problems += review_safety(story)
+    problems += _title_problems(outline.title)
+    problems += review_safety(story, outline.title)
     return Review(passed=not problems, problems=tuple(problems))
 
 
-def review_safety(story: str) -> list[str]:
-    """Ask the safety reviewer for issues in the story.
+def _title_problems(title: str) -> list[str]:
+    lowered = title.lower()
+    banned = sorted(word for word in BANNED_WORDS if re.search(rf"\b{word}\b", lowered))
+    return [f"The title contains banned words: {', '.join(banned)}."] if banned else []
+
+
+def review_safety(story: str, title: str = "") -> list[str]:
+    """Ask the safety reviewer for issues in the title and the story.
 
     Returns:
         A list of problems. An empty list means the reviewer found nothing.
-        An unreadable reply is a problem, so the story fails closed.
+        An unreadable or malformed reply is a problem, so the story fails closed.
     """
     reply = call_model(
-        build_safety_prompt(story),
+        build_safety_prompt(story, title),
         system=SAFETY_REVIEWER_SYSTEM_PROMPT,
         max_tokens=SAFETY_MAX_TOKENS,
     )
@@ -65,8 +74,10 @@ def review_safety(story: str) -> list[str]:
     issues = data.get("issues")
     if not isinstance(safe, bool) or not isinstance(issues, list):
         return ["Safety reviewer reply had the wrong shape, so the story fails closed."]
+    if not all(isinstance(item, dict) for item in issues):
+        return ["Safety reviewer listed an issue in an unreadable form, so the story fails closed."]
 
-    problems = [_describe_issue(item) for item in issues if isinstance(item, dict)]
+    problems = [_describe_issue(item) for item in issues]
     if not safe and not problems:
         problems.append("Safety reviewer marked the story unsafe without giving a reason.")
     return problems

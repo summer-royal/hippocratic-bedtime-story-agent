@@ -71,12 +71,18 @@ def check_feedback(feedback: str) -> FeedbackResult:
         return FeedbackResult(FeedbackRoute.DECLINE, (), f"Failing closed: {error}")
 
     route = _read_route(data.get("route"))
-    flags = tuple(flag for flag in _read_flags(data.get("risk_flags")) if flag in RISK_FLAGS)
+    raw_flags = _read_flags(data.get("risk_flags"))
     reason = data.get("reason") if isinstance(data.get("reason"), str) else ""
-    if route is None:
-        return FeedbackResult(FeedbackRoute.DECLINE, flags, "Failing closed: unknown route.")
+    if raw_flags is None:
+        if route is FeedbackRoute.ESCALATE:
+            return FeedbackResult(FeedbackRoute.ESCALATE, (), "Escalated; the risk flags were malformed.")
+        return FeedbackResult(FeedbackRoute.DECLINE, (), "Failing closed: risk_flags missing or malformed.")
+
+    flags = tuple(flag for flag in raw_flags if flag in RISK_FLAGS)
     if set(flags) & ESCALATE_FLAGS:
         return FeedbackResult(FeedbackRoute.ESCALATE, flags, reason)
+    if route is None:
+        return FeedbackResult(FeedbackRoute.DECLINE, flags, "Failing closed: unknown route.")
     if set(flags) & DECLINE_FLAGS:
         return FeedbackResult(FeedbackRoute.DECLINE, flags, reason)
     return FeedbackResult(route, flags, reason)
@@ -89,7 +95,8 @@ def _read_route(value: object) -> FeedbackRoute | None:
         return None
 
 
-def _read_flags(value: object) -> list[str]:
-    if not isinstance(value, list):
-        return []
-    return [flag for flag in value if isinstance(flag, str)]
+def _read_flags(value: object) -> tuple[str, ...] | None:
+    """Return the flag names, or None when the field is missing or is not a list of text."""
+    if not isinstance(value, list) or not all(isinstance(flag, str) for flag in value):
+        return None
+    return tuple(value)

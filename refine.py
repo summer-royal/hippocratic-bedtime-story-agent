@@ -64,7 +64,9 @@ def apply_feedback(
     planner_guard = replace(guard, route=Route.GENTLE) if decision.route is FeedbackRoute.SOFTEN else guard
     new_outline = plan_outline(request, planner_guard, previous=current_outline, feedback=feedback)
     category = guard.category or "calm_and_cozy"
-    attempt = improve_story(write_story(new_outline, category), new_outline, planner_guard, request)
+    attempt = improve_story(
+        write_story(new_outline, category), new_outline, planner_guard, request, feedback=feedback
+    )
 
     if attempt.story is not None and (attempt.overall or 0.0) >= (current.overall or 0.0):
         return RefineOutcome("updated", new_outline, attempt, attempt)

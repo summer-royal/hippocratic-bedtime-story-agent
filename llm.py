@@ -62,6 +62,12 @@ def call_model(prompt: str, system: str | None = None, max_tokens: int = 3000) -
         raise RuntimeError(
             "Could not reach the Anthropic API. Check your internet connection."
         ) from error
+    except anthropic.RateLimitError as error:
+        raise RuntimeError("The Anthropic API is busy right now. Please wait a minute and try again.") from error
+    except anthropic.APIError as error:
+        raise RuntimeError(
+            f"The Anthropic API returned an error ({type(error).__name__}). Please try again."
+        ) from error
 
     if response.stop_reason == "refusal":
         raise RuntimeError("The model declined this request.")

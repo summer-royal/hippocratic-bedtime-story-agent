@@ -7,11 +7,11 @@ notes go back to the storyteller, for at most MAX_REVISIONS revisions.
 """
 
 import json
-import sys
 from dataclasses import asdict, dataclass
 from datetime import datetime
 from pathlib import Path
 
+from devlog import developer_log
 from guard import GuardResult
 from judge import judge_story
 from outline import Outline
@@ -44,7 +44,13 @@ class ImprovedStory:
     rounds: tuple[RoundRecord, ...]
 
 
-def improve_story(story: str, outline: Outline, guard: GuardResult, request: str) -> ImprovedStory:
+def improve_story(
+    story: str,
+    outline: Outline,
+    guard: GuardResult,
+    request: str,
+    feedback: str | None = None,
+) -> ImprovedStory:
     """Review, judge, and revise a draft until it is good enough or the rounds run out.
 
     Args:
@@ -52,6 +58,7 @@ def improve_story(story: str, outline: Outline, guard: GuardResult, request: str
         outline: The outline the draft was written from.
         guard: The guard's decision for the request.
         request: The text the parent or child typed.
+        feedback: The change the parent or child asked for, when this is a revision.
 
     Returns:
         The highest-scoring draft that passed review, with a record of every round.
@@ -71,10 +78,10 @@ def improve_story(story: str, outline: Outline, guard: GuardResult, request: str
         judgement = None
         if review.passed:
             try:
-                judgement = judge_story(draft, outline, request, category, guard.risk_flags)
+                judgement = judge_story(draft, outline, request, category, guard.risk_flags, feedback)
             except ValueError as error:
                 # The judge checks quality only. A draft that passed review is kept even when the judge fails.
-                print(f"Developer log: judge unavailable this round: {error}", file=sys.stderr)
+                developer_log(f"judge unavailable this round: {error}")
 
         record = RoundRecord(
             round_number=round_number,
@@ -122,9 +129,12 @@ def save_run(request: str, category: str, improved: ImprovedStory) -> Path:
 
 
 def _log_round(record: RoundRecord, passed_review: bool) -> None:
-    """Print one round's scores and problems to stderr. The child never sees this."""
-    print(f"Developer log: round {record.round_number}: review passed={passed_review}", file=sys.stderr)
+    """Send one round's scores and problems to the developer log, which is off by default.
+
+    Problems can quote the story, so they are printed only when DEVELOPER_LOG=1.
+    """
+    developer_log(f"round {record.round_number}: review passed={passed_review}")
     for problem in record.review_problems:
-        print(f"Developer log:   problem: {problem}", file=sys.stderr)
+        developer_log(f"  problem: {problem}")
     if record.scores is not None:
-        print(f"Developer log:   overall {record.overall} scores {record.scores}", file=sys.stderr)
+        developer_log(f"  overall {record.overall} scores {record.scores}")

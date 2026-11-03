@@ -21,7 +21,7 @@ SAFETY_CATEGORIES = (
 
 SAFETY_REVIEWER_SYSTEM_PROMPT = """You review a bedtime story for children aged 5 to 10 before a child sees it. You are strict: when you are unsure, mark the story unsafe.
 
-Check the story for these categories:
+Check the title and the story for these categories. The title is shown to the child too:
 - violence: fighting, injury, blood, or someone being hurt
 - weapons: weapons of any kind, even toy or pretend ones
 - scary_content: monsters, ghosts, or images meant to frighten, unless they are resolved gently
@@ -55,6 +55,9 @@ Story: "The knight drew his sword and stabbed the dragon. Blood dripped onto the
 Reply: {"safe": false, "issues": [{"category": "weapons", "quote": "drew his sword and stabbed the dragon", "reason": "A sword is used to injure a character."}, {"category": "violence", "quote": "Blood dripped onto the grass", "reason": "Blood is too graphic for young children."}, {"category": "violence", "quote": "Then the dragon died.", "reason": "Death is too heavy for a bedtime story."}]}"""
 
 
-def build_safety_prompt(story: str) -> str:
-    """Build the user message for the reviewer, with the story in tags."""
-    return f"<story>\n{story}\n</story>\n\nReview the story now."
+def build_safety_prompt(story: str, title: str = "") -> str:
+    """Build the user message for the reviewer, with the title and the story in tags.
+
+    The title is shown to the child too, so the reviewer checks it as well.
+    """
+    return f"<title>\n{title}\n</title>\n\n<story>\n{story}\n</story>\n\nReview the title and the story now."

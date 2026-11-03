@@ -24,9 +24,6 @@ If I had two more hours, I would:
 4. Since a child's prompt could contain sensitive or private informaiton, I would add an option to delete previous chats in case a child does not want to store their chat history.
 """
 
-example_requests = "A story about a girl named Alice and her best friend Bob, who happens to be a cat."
-
-
 def main():
     user_input = input("What kind of story do you want to hear? ")
     try:

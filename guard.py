@@ -91,22 +91,31 @@ def has_crisis_phrase(text: str) -> bool:
 
 
 def _interpret_reply(data: dict) -> GuardResult:
-    """Validate the model's JSON and apply the code rules on top of it."""
-    flags = tuple(flag for flag in _read_flags(data.get("risk_flags")) if flag in RISK_FLAGS)
+    """Validate the model's JSON and apply the code rules on top of it.
+
+    Escalation flags are checked before the route and the category, so a
+    malformed category cannot turn a serious-risk flag into a decline.
+    Missing or malformed flags are never read as "no risk".
+    """
     reason = data.get("reason") if isinstance(data.get("reason"), str) else ""
     route = _read_route(data.get("route"))
-    category = data.get("category")
+    raw_flags = _read_flags(data.get("risk_flags"))
+    if raw_flags is None:
+        if route is Route.ESCALATE:
+            return GuardResult(Route.ESCALATE, None, (), "Escalated; the risk flags were malformed.")
+        return GuardResult(Route.DECLINE, None, (), "Failing closed: risk_flags missing or malformed.")
 
+    flags = tuple(flag for flag in raw_flags if flag in RISK_FLAGS)
+    if set(flags) & ESCALATE_FLAGS:
+        return GuardResult(Route.ESCALATE, None, flags, reason)
     if route is None:
         return GuardResult(Route.DECLINE, None, flags, "Failing closed: unknown route.")
+
+    category = data.get("category")
     if route in (Route.STORY, Route.GENTLE) and category not in CATEGORIES:
         return GuardResult(Route.DECLINE, None, flags, "Failing closed: missing or unknown category.")
-
-    if set(flags) & ESCALATE_FLAGS:
-        route = Route.ESCALATE
-    elif set(flags) & DECLINE_FLAGS and route in (Route.STORY, Route.GENTLE):
+    if set(flags) & DECLINE_FLAGS and route in (Route.STORY, Route.GENTLE):
         route = Route.DECLINE
-
     if route in (Route.DECLINE, Route.ESCALATE):
         category = None
     return GuardResult(route, category, flags, reason)
@@ -119,7 +128,8 @@ def _read_route(value: object) -> Route | None:
         return None
 
 
-def _read_flags(value: object) -> list[str]:
-    if not isinstance(value, list):
-        return []
-    return [flag for flag in value if isinstance(flag, str)]
+def _read_flags(value: object) -> tuple[str, ...] | None:
+    """Return the flag names, or None when the field is missing or is not a list of text."""
+    if not isinstance(value, list) or not all(isinstance(flag, str) for flag in value):
+        return None
+    return tuple(value)

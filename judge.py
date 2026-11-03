@@ -23,18 +23,24 @@ class Judgement:
 
 
 def judge_story(
-    story: str, outline: Outline, request: str, category: str, risk_flags: tuple[str, ...] = ()
+    story: str,
+    outline: Outline,
+    request: str,
+    category: str,
+    risk_flags: tuple[str, ...] = (),
+    feedback: str | None = None,
 ) -> Judgement:
     """Score a story on quality and return revision notes.
 
     The overall score is the mean of the criteria, computed here in code so
-    the model never sets it directly.
+    the model never sets it directly. When a change was requested, the judge
+    also sees that change and scores whether the story makes it.
 
     Raises:
         RuntimeError: If the model call fails (see llm.call_model).
         ValueError: If the judge's reply cannot be read, even after one retry.
     """
-    prompt = build_judge_prompt(request, category, risk_flags, outline.to_json(), story)
+    prompt = build_judge_prompt(request, category, risk_flags, outline.to_json(), story, feedback)
     last_error: ValueError | None = None
     for _ in range(JUDGE_ATTEMPTS):
         reply = call_model(prompt, system=JUDGE_SYSTEM_PROMPT, max_tokens=JUDGE_MAX_TOKENS)
