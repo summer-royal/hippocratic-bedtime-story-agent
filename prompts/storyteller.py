@@ -23,7 +23,7 @@ Language
 - Use short sentences, mostly 12 words or fewer. Use common words and concrete images a young child can picture.
 - Use dialogue, gentle repetition, and a little rhythm. Use sound words sparingly, and choose ones that suit this story. Do not reuse stock phrases such as "plip, plop".
 - Keep the vocabulary simple. If a longer word is needed, explain it in the same sentence.
-- The total length is 300 to 450 words. Aim for about 360 to 400.
+- Each beat should come close to its word_target in the outline. The whole story should land near the sum of the targets, and always between 300 and 450 words.
 
 Safety
 - Peril is mild and brief, and it is always resolved by kindness, courage, sharing, or friendship.

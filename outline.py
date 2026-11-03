@@ -42,12 +42,19 @@ class Outline:
         return json.dumps(asdict(self), indent=2)
 
 
-def plan_outline(request: str, guard: GuardResult) -> Outline:
+def plan_outline(
+    request: str,
+    guard: GuardResult,
+    previous: "Outline | None" = None,
+    feedback: str | None = None,
+) -> Outline:
     """Ask the planner for an outline and validate the reply.
 
     Args:
         request: The text the parent or child typed.
         guard: The guard's decision. Its category and flags shape the outline.
+        previous: The outline of the story being changed, when revising.
+        feedback: The change the parent or child asked for, when revising.
 
     Returns:
         A validated Outline.
@@ -61,6 +68,8 @@ def plan_outline(request: str, guard: GuardResult) -> Outline:
         guard.category or "calm_and_cozy",
         guard.route.value,
         guard.risk_flags,
+        previous.to_json() if previous else None,
+        feedback,
     )
     reply = call_model(prompt, system=PLANNER_SYSTEM_PROMPT, max_tokens=PLANNER_MAX_TOKENS)
     return parse_outline(reply)

@@ -73,7 +73,7 @@ def check_request(request: str) -> GuardResult:
     text = request.strip()
     if not text:
         return GuardResult(Route.DECLINE, None, (), "Empty request.")
-    if _has_crisis_phrase(text):
+    if has_crisis_phrase(text):
         return GuardResult(Route.ESCALATE, None, (), "Matched a crisis phrase before the model ran.")
 
     reply = call_model(text, system=GUARD_SYSTEM_PROMPT, max_tokens=GUARD_MAX_TOKENS)
@@ -84,7 +84,8 @@ def check_request(request: str) -> GuardResult:
     return _interpret_reply(data)
 
 
-def _has_crisis_phrase(text: str) -> bool:
+def has_crisis_phrase(text: str) -> bool:
+    """Return True if the text contains one of the crisis phrases, as whole words."""
     lowered = text.lower()
     return any(re.search(rf"\b{re.escape(phrase)}\b", lowered) for phrase in CRISIS_PHRASES)
 

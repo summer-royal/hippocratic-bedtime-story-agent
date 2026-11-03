@@ -21,3 +21,18 @@ STORY_NOT_READY_MESSAGE = (
     "I could not finish a story I am happy with this time. "
     "Please try asking again, or try a different story idea."
 )
+
+FEEDBACK_DECLINE_MESSAGE = (
+    "I can't make that change, but I'd be glad to make a different one. "
+    "What else would you like to change?"
+)
+
+FEEDBACK_KEPT_MESSAGE = (
+    "I tried that change, but the new version did not score as well, "
+    "so I kept the story as it was."
+)
+
+FEEDBACK_FAILED_MESSAGE = (
+    "I could not make that change this time. Your story is unchanged. "
+    "Please try the change again, or ask for something different."
+)
