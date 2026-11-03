@@ -1,0 +1,15 @@
+# Secrets and private files
+.env
+ASSIGNMENT_EMAIL.md
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Scratch run logs (curated examples go in examples/)
+runs/
+
+# macOS
+.DS_Store
