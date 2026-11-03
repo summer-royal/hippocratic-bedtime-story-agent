@@ -17,6 +17,9 @@ from storyteller import write_story
 """
 Before submitting the assignment, describe here in a few sentences what you would have built next if you spent 2 more hours on this project:
 
+DRAFT, to be rewritten in your own words:
+With two more hours I would write a held-out eval set before tuning any more prompts, and run it several times to measure how much the results vary. I would check the judge against a few dozen stories rated by people, and see whether its scores agree with them. I would add a brand and medicine list in code, so the deterministic gate catches those words as well as the reviewer. I would give keep-or-revert a small score tolerance, since a 0.2 difference rejected a change the user asked for. I would move the emergency numbers into a per-country setting. Last, I would add an option to delete runs/ after each session, because those files hold children's text.
+
 """
 
 example_requests = "A story about a girl named Alice and her best friend Bob, who happens to be a cat."
