@@ -25,8 +25,8 @@ FEEDBACK_DECLINE_MESSAGE = (
 )
 
 FEEDBACK_KEPT_MESSAGE = (
-    "I tried that change, but the new version did not score as well when a judge evaluated it, "
-    "so I kept the story as it was."
+    "I tried creating a new story that incorporates that change, but the new version of the story did not score as well when a judge evaluated it. "
+    "I want to ensure that I only provide you with high-quality stories, so I kept the story as it was."
 )
 
 FEEDBACK_FAILED_MESSAGE = (
