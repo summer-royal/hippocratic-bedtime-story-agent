@@ -1,20 +1,17 @@
 """Fixed messages the app shows to children and parents.
-
-The emergency numbers are US numbers (911 and 988). Change them for another
-country before using the app there.
 """
 
 ESCALATION_MESSAGE = (
-    "It sounds like something hard may be happening, and you deserve help. "
-    "Please tell a grown-up you trust right now, such as a parent, teacher, or caregiver. "
+    "Given the topic of your message, it sounds like you might be facing some challenges, and you deserve help. "
+    "If you are having any problems, please tell a grown-up you trust right now, such as a parent, teacher, or caregiver immediately. "
     "If you are hurt or in danger, call 911 right away. "
     "You can also call or text 988 at any time to talk with someone. "
-    "Asking for help was the right thing to do."
+    "Asking for help is always the right thing to do."
 )
 
 DECLINE_MESSAGE = (
-    "I can't write that story, but I'd love to help with another one. "
-    "How about a story about a brave little turtle who helps a lost puppy find home?"
+    "I can't write that story because it may contain restricted content, but I'd love to help with another one. "
+    "Are there any other stories you would be interested in hearing?"
 )
 
 STORY_NOT_READY_MESSAGE = (
@@ -23,12 +20,12 @@ STORY_NOT_READY_MESSAGE = (
 )
 
 FEEDBACK_DECLINE_MESSAGE = (
-    "I can't make that change, but I'd be glad to make a different one. "
+    "I can't make that change because it may include restricted content, but I'd be glad to make a different one. "
     "What else would you like to change?"
 )
 
 FEEDBACK_KEPT_MESSAGE = (
-    "I tried that change, but the new version did not score as well, "
+    "I tried that change, but the new version did not score as well when a judge evaluated it, "
     "so I kept the story as it was."
 )
 

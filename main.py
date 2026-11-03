@@ -17,9 +17,11 @@ from storyteller import write_story
 """
 Before submitting the assignment, describe here in a few sentences what you would have built next if you spent 2 more hours on this project:
 
-DRAFT, to be rewritten in your own words:
-With two more hours I would write a held-out eval set before tuning any more prompts, and run it several times to measure how much the results vary. I would check the judge against a few dozen stories rated by people, and see whether its scores agree with them. I would add a brand and medicine list in code, so the deterministic gate catches those words as well as the reviewer. I would give keep-or-revert a small score tolerance, since a 0.2 difference rejected a change the user asked for. I would move the emergency numbers into a per-country setting. Last, I would add an option to delete runs/ after each session, because those files hold children's text.
-
+If I had two more hours, I would:
+1. Create a held-out evaluation set of ~100 example requests to tune my prompt. 
+2. If I was allowed to consult others to judge the output stories, I would generate 20 stories, have the LLM judge score these stories against the rubric, and then ask my friends and family to score the stories against the same rubric to see how their scores compare to the judge’s scores. If I am not allowed to consult with others, I would consult ChatGPT and Gemini as an external judge to comapre against Claude. 
+3. Right now, if a child sends a concerning message that warrants an escalation, resources are provided to the child, including the phone number for emergency services 911; ideally, I would expand this to provide resources based on the child’s country (not specific to the U.S.)
+4. Since a child's prompt could contain sensitive or private informaiton, I would add an option to delete previous chats in case a child does not want to store their chat history.
 """
 
 example_requests = "A story about a girl named Alice and her best friend Bob, who happens to be a cat."
