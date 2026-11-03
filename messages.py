@@ -16,3 +16,8 @@ DECLINE_MESSAGE = (
     "I can't write that story, but I'd love to help with another one. "
     "How about a story about a brave little turtle who helps a lost puppy find home?"
 )
+
+STORY_NOT_READY_MESSAGE = (
+    "I could not finish a story I am happy with this time. "
+    "Please try asking again, or try a different story idea."
+)
