@@ -50,3 +50,21 @@ def build_storyteller_prompt(outline_json: str, category: str) -> str:
         f"<outline>\n{outline_json}\n</outline>\n\n"
         "Write the story now, following the outline."
     )
+
+
+def build_revision_prompt(previous_story: str, outline_json: str, category: str, notes: list[str]) -> str:
+    """Build the user message for a revision.
+
+    The previous story and the notes arrive in tags, so the model reads them as data.
+    The style sheet still applies, and the outline still decides the structure.
+    """
+    tone = CATEGORY_TONE.get(category, CATEGORY_TONE["calm_and_cozy"])
+    note_lines = "\n".join(f"- {note}" for note in notes)
+    return (
+        f"Tone for this story: {tone}\n\n"
+        f"<outline>\n{outline_json}\n</outline>\n\n"
+        f"<previous_story>\n{previous_story}\n</previous_story>\n\n"
+        f"<notes>\n{note_lines}\n</notes>\n\n"
+        "Revise the previous story. Fix only what the notes ask for and keep everything else. "
+        "Keep the five beats, the outline, and the closing line. Reply with the story text only."
+    )

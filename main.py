@@ -3,7 +3,7 @@ import sys
 from guard import Route, check_request
 from messages import DECLINE_MESSAGE, ESCALATION_MESSAGE, STORY_NOT_READY_MESSAGE
 from outline import plan_outline
-from review import review_story
+from revision import improve_story, save_run
 from storyteller import write_story
 
 """
@@ -25,23 +25,21 @@ def main():
             print(DECLINE_MESSAGE)
             return
         outline = plan_outline(user_input, result)
-        story = write_story(outline, result.category or "calm_and_cozy")
-        review = review_story(story, outline, result, user_input)
-        if not review.passed:
-            # Developer log only: the child sees the friendly message below, never these details.
-            for problem in review.problems:
-                print(f"Developer log: {problem}", file=sys.stderr)
+        category = result.category or "calm_and_cozy"
+        improved = improve_story(write_story(outline, category), outline, result, user_input)
+        save_run(user_input, category, improved)
+        if improved.story is None:
             print(STORY_NOT_READY_MESSAGE)
             return
     except RuntimeError as error:
         print(f"Error: {error}")
         sys.exit(1)
     except ValueError:
-        print("The story planner gave an unusable answer. Please try again.")
+        print("The model gave an unusable answer. Please try again.")
         sys.exit(1)
     print(outline.title)
     print()
-    print(story)
+    print(improved.story)
 
 
 if __name__ == "__main__":

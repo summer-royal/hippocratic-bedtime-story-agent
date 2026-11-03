@@ -29,8 +29,9 @@ Rules for every beat:
 - Each beat has a "word_target" between 50 and 90. The five targets should add up to about 360 to 400 words, so the finished story lands between 300 and 450.
 - Each beat has a "safety_intent": one sentence saying how this beat stays safe and calm for a young child.
 - Never plan a death, weapon, injury, blood, monster that threatens children, medicine or doses, real people, brand names, romance, or anything frightening that is not resolved gently.
-- Give every character and place a fresh, specific name. Do not default to common story names such as Pip, Lily, Max, Mia, or Ben.
-- Use invented names and places only. If the request includes a child's address, school, phone number, or other identifying details, leave them out of every field. A first name is fine.
+- If the request names a story character, animal, or place, use exactly those names in the outline. The request is what the parent or child asked for.
+- Otherwise, give every character and place a fresh, specific name. Do not default to common story names such as Pip, Lily, Max, Mia, or Ben.
+- If the request includes a child's address, school, phone number, or other identifying details, leave them out of every field. If the risk flags include personal_info, do not use any name or place from the request at all.
 
 Route and category:
 - If the guard route is "gentle", the outline must soften the request's scary, sad, or conflict element. A monster becomes shy or friendly, and fear is resolved by kindness. Keep what the request asked for.
