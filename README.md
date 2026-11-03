@@ -158,7 +158,7 @@ flowchart TD
     Review -->|parse reply| Parsing
 ```
 
-The full diagram and the reading notes are in [docs/block-diagram.md](docs/block-diagram.md).
+The full diagram and the reading notes are in [docs/block-diagram.md](docs/block-diagram.md) and docs/block-diagram.png.
 
 ## Project layout
 
